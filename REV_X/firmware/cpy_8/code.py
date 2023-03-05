@@ -187,7 +187,7 @@ print("")
 data = []
 counter = 0
 while True:
-    try:
+   # try:
         if scd.data_available:
             counter += 1
             co2 = scd.CO2
@@ -223,15 +223,19 @@ while True:
                 data = [] # reinit data
                 # Send co2 values to the feed
                 print("Sending {0} to co2 feed...".format(co2))
-                io.send_data(co2_feed["key"], co2)
-                io.send_data(temp_feed["key"], temp)
-                io.send_data(humidity_feed["key"], humidity)
-                print("Data sent!")
-                counter = 0
+                try:
+                    io.send_data(co2_feed["key"], co2)
+                    io.send_data(temp_feed["key"], temp)
+                    io.send_data(humidity_feed["key"], humidity)
+                except:
+                    print("Error writing to AIO!")
+                else:
+                    print("Data sent!")
+                    counter = 0
 
         time.sleep(1)
     # any errors, reset MCU
-    except Exception as e:  # pylint: disable=broad-except
+    #except Exception as e:  # pylint: disable=broad-except
         #reset_on_error(10, e)
-        print("Error!" + e)
+    #    print("Error!" + e)
 
